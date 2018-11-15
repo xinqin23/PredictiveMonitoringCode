@@ -41,9 +41,10 @@ for i = 1:n
           exprAtom = strsplit(exprGroup,"*");
           for id = 1:length(exprAtom)
           proposition = exprAtom(id);
-          if contains(proposition,"^")
-            proposition = extractBefore(proposition,"^")  % intersected with it self. 
-          end 
+          intersectSelfid = proposition=="^";
+          if intersectSelfid != 0
+              extractBefore(proposition,"^") 
+          end
           idx = names==proposition;
           tdx = times(idx);
           tdxScaled = int64(tdx);

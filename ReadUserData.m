@@ -1,5 +1,5 @@
-function BG = ReadUserData()
-name = './GenedData/BGTrace.txt';
+function BG = ReadUserData(name)
+% name = './GenedData/BGTrace.txt';
 BG = textread(name,' %f ')
 T = length(BG)
 

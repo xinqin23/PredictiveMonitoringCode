@@ -7,10 +7,18 @@ plot(t,y)
 timeRecord = [];
 names = [];
 count = 1;
-for i = 0.1:0.1:0.5
-    for j = 0.1 : 0.1: 0.5
+% for i = 0.1:0.1:0.5
+%     for j = 0.1 : 0.1: 0.5
+%        timeStep = i + j;
+%        names = [names, "F" + num2str(i*10) + "G" + num2str(j*10)];
+%        timeRecord(count) = timeStep;
+%        count = count + 1;
+%     end
+% end
+for i = 1:5
+    for j = 1 : 5
        timeStep = i + j;
-       names = [names, "F" + num2str(i*10) + "G" + num2str(j*10)];
+       names = [names, "F" + num2str(i) + "G" + num2str(j)];
        timeRecord(count) = timeStep;
        count = count + 1;
     end

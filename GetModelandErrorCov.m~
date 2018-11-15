@@ -1,28 +1,29 @@
 function [errorsCov, predictedSignal] = GetModelandErrorCov(h)
 close all;
 step = 0.1;
-T = 2;
+Tplot = 2;
 t = 0.1:0.1:2;
 y = sin(2*pi*t);
 signal = y';
-% h = 5
+h = 10
 
 
-datafile = './GenedData/BGTrace1.txt'
-BG = ReadUserData(datafile);
+
+BG = ReadUserData();
 total = length(BG)
-signal = [BG(1:total*4/5)];
+signal = [BG(1:total*3/5)];
 
 % autocorr(BG) % check autocorr
 parcorr(BG)
 
 
 T = length(signal)
-% step = 15
-t = 1:T; 
+step = 15
+Tplot = T*step
+t = 1:step:Tplot; 
 
 % h = 3;
-p = 3; d=2; q = 1; %over differencing is not good
+p = 3; d=0; q = 1; %over differencing is not good
 
 Mdl = arima(p,d,q)
 % Mdl = arima('Constant',0,'D',d,'Seasonality',10,...
@@ -38,14 +39,14 @@ Mdl = arima(p,d,q)
 [yF, yMSE] = forecast(EstMdl,h,'Y0',signal)
 
 
-groundt = 1:total;
+groundt = Tplot+step:step:step*total;
 
 figure
-plot(t,signal)
+plot(t,signal,'Color',[.5,.5,.5])
 hold on
-h1 = plot(T+1:T+h,yF,'r','LineWidth',2);
+h1 = plot(Tplot+1*step:step:Tplot+h*step,yF,'r','LineWidth',2);
 hold on
-h2 = plot(groundt,BG,'Color',[.5,.5,.5])
+h2 = plot(groundt,BG(1,Tplot+1,:),'b')
 %step is 0.1 so
 
 
