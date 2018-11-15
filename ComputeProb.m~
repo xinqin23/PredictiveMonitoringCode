@@ -2,7 +2,7 @@ function Prob = ComputeProb()
 addpath('uni_nonstationary','multi_nonstationary')
 
 
-h = 4; % number of prediction step
+h = 3; % number of prediction step
 [errorsCov,predictedSignal] = GetModelandErrorCov(h)
 [times, names] = expand();
 
@@ -22,7 +22,7 @@ Prob = 0;
 varNumber = 1;
 
 mu = zeros(1,h);
-
+flag = -1;
 for i = 1:n
     if (i > h)
         break
@@ -40,25 +40,32 @@ for i = 1:n
           exprGroup = char(exprList(co(mm)));
           exprAtom = strsplit(exprGroup,"*");
           for id = 1:length(exprAtom)
-          proposition = exprAtom(id);
-          intersectSelfid = proposition=="^";
-          if intersectSelfid != 0
-              extractBefore(proposition,"^") 
-          end
-          idx = names==proposition;
-          tdx = times(idx);
-          tdxScaled = int64(tdx);
-          if tdxScaled > h %can not delete
-            break
-          end
-          clow(tdxScaled) = 0;
-          cup(tdxScaled) = Inf;
+              proposition = exprAtom(id);
+              if contains(proposition,"^")
+                proposition = extractBefore(proposition,"^");  % intersected with it self. 
+              end 
+              idx = names==proposition;
+              tdx = times(idx);
+              tdxScaled = int64(tdx);
+              if tdxScaled > h %can not delete
+                if id == 1  % the first assignment is greater than h
+                    flag = 1
+                end
+                break
+              end
+              clow(tdxScaled) = 0;
+              cup(tdxScaled) = Inf;
           end
           indexArray(co(mm)) = 1;
        end
        clow, cup
+       if flag ~= 1
        [low, up] = CalIntervals(clow, cup,predictedSignal)
        guarantee = mvncdf(low,up,mu,errorsCov) %positive definate
+       else
+           guarantee = 0; %ignore the case when first assign is outside the prediction
+       end
+       flag = -1;
        margin = margin + guarantee
     end
     Prob = Prob + sign*margin
