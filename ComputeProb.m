@@ -54,7 +54,7 @@ for i = 1:n
                 end
                 break
               end
-              clow(tdxScaled) = -Inf;
+              clow(tdxScaled) = 150;
               cup(tdxScaled) = Inf;
           end
        end

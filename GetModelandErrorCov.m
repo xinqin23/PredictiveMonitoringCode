@@ -1,21 +1,21 @@
 function [errorsCov, predictedSignal] = GetModelandErrorCov(h)
 close all;
-step = 0.1;
-t = 0.1:0.1:2;
-y = sin(2*pi*t);
-signal = y';
+% step = 0.1;
+% t = 0.1:0.1:2;
+% y = sin(2*pi*t);
+% signal = y';
 % h = 5
 
  
-% datafile = './GenedData/BGTrace1.txt'
-% BG = ReadUserData(datafile);
-% total = length(BG)
-% signal = [BG(1:total*4/5)];
+datafile = './GenedData/BGTrace1.txt'
+BG = ReadUserData(datafile);
+total = length(BG)
+signal = [BG(1:total*4/5)];
 % 
 % % autocorr(BG) % check autocorr
 % parcorr(BG)
 
-
+% 
 % randn('seed',1);
 % whitenoise = randn(1,50);
 % signal = whitenoise';
@@ -23,10 +23,11 @@ signal = y';
 
 T = length(signal)
 % step = 15
-% t = 1:T; 
+t = 1:T; 
 
 % h = 3;
 p = 3; d=2; q = 1; %over differencing is not good
+% p = 0; d= 0; q = 0; %check uni 1 correct
 
 Mdl = arima(p,d,q)
 % Mdl = arima('Constant',0,'D',d,'Seasonality',10,...
@@ -42,14 +43,14 @@ Mdl = arima(p,d,q)
 [yF, yMSE] = forecast(EstMdl,h,'Y0',signal)
 
 
-% groundt = 1:total;
+groundt = 1:total;
 
 figure
 plot(signal)
 hold on
 h1 = plot(T+1:T+h,yF,'r','LineWidth',2);
-% hold on
-% h2 = plot(groundt,BG,'Color',[.5,.5,.5])
+hold on
+h2 = plot(groundt,BG,'Color',[.5,.5,.5])
 %step is 0.1 so
 
 
