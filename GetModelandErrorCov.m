@@ -11,7 +11,7 @@ datafile = './GenedData/BGTrace1.txt'
 BG = ReadUserData(datafile);
 total = length(BG)
 signal = [BG(1:total*4/5)];
-% 
+
 % % autocorr(BG) % check autocorr
 % parcorr(BG)
 
@@ -23,35 +23,28 @@ signal = [BG(1:total*4/5)];
 
 T = length(signal)
 % step = 15
-t = 1:T; 
+% t = 1:T; 
 
-% h = 3;
-p = 3; d=2; q = 1; %over differencing is not good
+% h = 5;
+p = 4; d=2; q = 1; %over differencing is not good
 % p = 0; d= 0; q = 0; %check uni 1 correct
 
 Mdl = arima(p,d,q)
 % Mdl = arima('Constant',0,'D',d,'Seasonality',10,...
 %     'MALags',q,'SMALags',2,'ARLags',p)
 [EstMdl,EstParamCov,logL,info] = estimate(Mdl,signal) %signal should be column vector
-[yF, yMSE] = forecast(EstMdl,h,'Y0',signal)
+[yF, yMSE] = forecast(EstMdl,h,'Y0',signal);
 
 
-Mdl = arima(p,d,q)
-% Mdl = arima('Constant',0,'D',d,'Seasonality',10,...
-%     'MALags',q,'SMALags',2,'ARLags',p)
-[EstMdl,EstParamCov,logL,info] = estimate(Mdl,signal) %signal should be column vector
-[yF, yMSE] = forecast(EstMdl,h,'Y0',signal)
+% groundt = T:total;
 
-
-groundt = 1:total;
-
-figure
-plot(signal)
-hold on
-h1 = plot(T+1:T+h,yF,'r','LineWidth',2);
-hold on
-h2 = plot(groundt,BG,'Color',[.5,.5,.5])
-%step is 0.1 so
+% figure
+% plot(signal)
+% hold on
+% h1 = plot(T+1:T+h,yF,'r','LineWidth',2);
+% hold on
+% h2 = plot(groundt,[BG(T:total)],'Color',[.5,.5,.5])
+% %step is 0.1 so
 
 
 % p =EstMdl.P
@@ -59,8 +52,8 @@ h2 = plot(groundt,BG,'Color',[.5,.5,.5])
 % q = EstMdl.Q
 
 varNumber = 1;
-phi = [eye(varNumber) cell2mat(EstMdl.AR)]
-theta = [eye(varNumber) cell2mat(EstMdl.MA)]
+phi = [eye(varNumber) cell2mat(EstMdl.AR)];
+theta = [eye(varNumber) cell2mat(EstMdl.MA)];
 
 
 errorsCov = uni_nonstationary(p,d,q,phi,theta,T,h);
